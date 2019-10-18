@@ -1,4 +1,8 @@
-# iMobTrax 使用文档
+# iMobTrax 从0到1
+
+**问题：**
+1. IM 是否支持多个账号同时追踪？可以的话最多支持多少个？
+2. IM跳转是什么意思
 
 **参考：**
 
@@ -6,14 +10,42 @@
 
 [2. iMobiTrax最全使用文档](https://www.advertcn.com/thread-22939-1-1.html)
 
+**环境安装：**
+
+
+
 [VMware Workstation Pro v15.5.0 官方版+激活密钥](https://www.nocmd.com/740.html)
+
+**下载地址：**
+
+[Workstation 15 Pro for Windows](https://www.vmware.com/go/getworkstation-win)
+
+[Workstation 15 Pro for Linux](https://www.vmware.com/go/getworkstation-linux)
+
+**激活密钥：**
+```
+ZC10K-8EF57-084QZ-VXYXE-ZF2XF
+
+UF71K-2TW5J-M88QZ-8WMNT-WKUY4
+
+AZ7MK-44Y1J-H819Z-WMYNC-N7ATF
+
+CU702-DRD1M-H89GP-JFW5E-YL8X6
+
+YY5EA-00XDJ-480RP-35QQV-XY8F6
+
+VA510-23F57-M85PY-7FN7C-MCRG0
+```
 
 [CentOS 7.2 iso下载](https://man.linuxde.net/download/CentOS_7_2)
 
-[VMware虚拟机安装CentOS 7并搭建lamp服务器环境](https://blog.csdn.net/chandoudeyuyi/article/details/52223600)
+**DVD版:**[下载](http://archive.kernel.org/centos-vault/7.2.1511/isos/x86_64/CentOS-7-x86_64-DVD-1511.iso)
 
-[LNMP v1.5 无人值守安装](https://lnmp.org/faq/v1-5-auto-install.html)
+[VMware虚拟机安装CentOS 7并搭建lamp服务器环境教程](https://blog.csdn.net/chandoudeyuyi/article/details/52223600)
 
+[LNMP v1.5 无人值守安装教程](https://lnmp.org/faq/v1-5-auto-install.html)
+
+**无人值守安装命令：**
 ```
 wget http://soft.vpser.net/lnmp/lnmp1.5.tar.gz -cO lnmp1.5.tar.gz && tar zxf lnmp1.5.tar.gz && cd lnmp1.5 && LNMP_Auto="y" DBSelect="2" DB_Root_Password="lnmp.org" InstallInnodb="y" PHPSelect="5" SelectMalloc="1" ./install.sh lnmp
 ```
@@ -41,9 +73,6 @@ wget http://soft.vpser.net/lnmp/lnmp1.5.tar.gz -cO lnmp1.5.tar.gz && tar zxf lnm
   6. ping命令测试连通性 ，例如 ping -c 10 202.108.22.5(ping 百度首页的网址,ping次数为10次,可通过Ctrl+C终止命令)
 - yum install screen 或 apt-get install screen
 - screen -S lnmp
-
-
-   
 
 
 
