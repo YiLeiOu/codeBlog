@@ -1,4 +1,4 @@
-# iMobTrax 从0到1
+# VMWare + iMobTrax3.8 从0到1
 
 **问题：**
 1. IM 是否支持多个账号同时追踪？可以的话最多支持多少个？
@@ -37,6 +37,8 @@ YY5EA-00XDJ-480RP-35QQV-XY8F6
 VA510-23F57-M85PY-7FN7C-MCRG0
 ```
 
+**[VMware 文档](https://docs.vmware.com/cn/VMware-Workstation-Pro/15.0/com.vmware.ws.using.doc/GUID-0EE752F8-C159-487A-9159-FE1F646EE4CA.html)**
+
 [CentOS 7.2 iso下载](https://man.linuxde.net/download/CentOS_7_2)
 
 **DVD版:**[下载](http://archive.kernel.org/centos-vault/7.2.1511/isos/x86_64/CentOS-7-x86_64-DVD-1511.iso)
@@ -71,6 +73,58 @@ wget http://soft.vpser.net/lnmp/lnmp1.5.tar.gz -cO lnmp1.5.tar.gz && tar zxf lnm
   4. i 键 进入编辑模式，将no 改成yes 然后按ESC键，再输入 ：wq （wq表示保存并退出）
   5. 重启网卡： service network start
   6. ping命令测试连通性 ，例如 ping -c 10 202.108.22.5(ping 百度首页的网址,ping次数为10次,可通过Ctrl+C终止命令)
+
+- 用yum命令安装 wget: yum install wget
+
+- 安装Perl
+
+    ```
+    yum install -y gcc
+    wget http://www.cpan.org/src/5.0/perl-5.16.1.tar.gz
+    tar -xzf perl-5.16.1.tar.gz
+    cd perl-5.16.1
+    ./Configure -des -Dprefix=/usr/local/perl
+    make && make test && make install
+    perl -v
+
+    ```
+
+- 安装VMware tools 
+
+    1. 菜单栏【虚拟机】点击 【安装Vmware tools】
+    2. 新建目录/mnt/cdrom
+    3. 挂载目录 mount /dev/cdrom /mnt/cdrom
+    4. 转到工作目录，例如 cd /tmp
+    5. 解压缩安装程序 ：tar zxpf /mnt/cdrom/VMwareTools-x.x.x-yyyy.tar.gz
+    6. 卸载 CD-ROM 映像：umount /dev/cdrom 
+    7. 运行安装程序并以 root 用户身份配置 VMware Tools。
+        cd vmware-tools-distrib
+        sudo ./vmware-install.pl
+
+- 安装VMware tools过程中提示找不到kernel header。[参考](https://www.cnblogs.com/mylinux/p/5612168.html)
+
+    1. Update the kernel:
+       ```
+       yum update kernel -y
+       ```
+    2. Install the kernel-headers, kernel-devel and other required packages:
+       ```
+       yum install kernel-headers kernel-devel -y
+       ```
+    3. Reboot the server to make sure it load to the new kernel:
+       ```
+       init 6
+       ```
+    4. The kernel version has been updated including the kernel-headers and kernel-devel:
+   
+       ```
+       rpm -qa|grep -e  kernel-devel  -e  kernel-headers 
+       　　kernel-devel-3.10.0-327.18.2.el7.x86_64
+       　　kernel-headers-3.10.0-327.18.2.el7.x86_64
+       uname -r
+       　　3.10.0-327.18.2.el7.x86_64
+       ```
+
 - yum install screen 或 apt-get install screen
 - screen -S lnmp
 
@@ -138,6 +192,17 @@ wget http://soft.vpser.net/lnmp/lnmp1.5.tar.gz -cO lnmp1.5.tar.gz && tar zxf lnm
 #### 问题
 
 [ioncube loader 插件没有](https://51daiwei.net/install-ioncube-loader-on-centos)
+
+> 注册完账号后登录不进界面，并提示`The form could not be submitted. Click here to try again`
+
+**解决：**
+
+   1. 在本地主机修改hosts文件，添加本地域名映射。如：`192.169.199.129  www.mymobi.com` [参考](https://blog.csdn.net/wudinaniya/article/details/77624023)
+
+   2. cmd窗口`ping www.mymobi.com`是否正常连接
+   3. 修改nginx.conf文件 `server_name  www.mymobi.com`
+   4. sysytemctl restart nginx 重启nginx服务
+
 
 
 ## 3. IM主要设置说明；

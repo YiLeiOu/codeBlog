@@ -4,6 +4,8 @@
 
 [蓝灯](https://getlantern.org/zh_CN/index.html#)
 
+[各种翻墙姿势](https://program-think.blogspot.com/)
+
 ## 科学上网新方法ShadowSocks继任者WireGuard
 
 最近pincong帖子少了很多，应该是墙加高加回了，现在推一个新软件 WireGuard 希望更多的人能用上它来学习知识，交流经验。
