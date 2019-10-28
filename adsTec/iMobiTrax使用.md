@@ -1,8 +1,26 @@
 # VMWare + iMobTrax3.8 从0到1
 
 **问题：**
-1. IM 是否支持多个账号同时追踪？可以的话最多支持多少个？
-2. IM跳转是什么意思
+
+- IM 是否支持多个账号同时追踪？可以的话最多支持多少个？
+
+    IM 本质上只是一个连接追踪程序，同一时间只能登录一个账号进行操作。iM 需要与数据库和服务器进行绑定
+
+- IM跳转是什么意思
+
+    IM跳转的意思是一个广告展示在网页上被点击之后流量联盟的系统会自动根据campaign link（在IM中进行配置campaign后生成的连接，需要提交到流量联盟进行发布）中的token参数进行填充，包括但不限于：浏览器、时间、地区、广告ID、素材ID等等。之后会跳转到IM系统，IM系统会根据链接token携带的参数把用户的一些基本信息保存到IM系统绑定的数据库（数据分析所用到的数据的来源）。然后IM系统会根据campaign的配置跳转到Landing page 或者广告主。
+
+**过程：**
+
+1. 首先，访客从某个流量来源看到你的广告并点击了它；
+2. 然后流量平台会根据你设置的TOKEN，将其中的值填充，如上面图中的Token 5 (c5):项{category}将被替换为一个值，传递给你的IM。
+3. 你的IM记录了这个访客点击记录（如时间、IP、useragent、referer、token等），将这些数据记录到数据库中。然后反馈给访客一个跳转，让访客的浏览器跳转到你的LP上。
+4. 当访客对你的LP很感兴趣，点击了其中的行动链接，此时浏览器向IM提交了一个请求，浏览器记录下这个点击数据后，读取数据库中你设置的OFFER链接，在该链接后面加上一个subid值，反馈给访客，让浏览器跳转。
+5. 浏览器接着跳转到联盟后台的链接，并进一步跳转到广告主链接。当访客访问链接跳转到联盟后台时，该链接会提交一个subid给联盟。联盟后台记录这个subid在数据库中。
+6. 当这个访客的点击产生了一个转化，广告主首先得到这个转化数据，然后将该数据反馈给联盟，联盟得到数据后，根据数据库记录查找对应的数据，最后确认是你的转化，于是将它之前记录的subid值再传给你的IM。
+7. 你的IM得到了一个转化！
+8. 这这过程中，每一次的点击，subid都不会重复，这样保证了转化数据不会乱
+
 
 **参考：**
 
@@ -164,9 +182,17 @@ wget http://soft.vpser.net/lnmp/lnmp1.5.tar.gz -cO lnmp1.5.tar.gz && tar zxf lnm
   运行 sysctl -p  使修改生效
 
 5. 增加包转发策略
-  运行 iptables -t nat -AOUTPUT -d 50.28.102.240 -j DNAT --to 8.8.4.4 (注：把8.8.4.4替换为你服务器的真实IP）
+   
+   ```
+   //首先清除之前的规则
+   iptables -F
+   iptables -t nat -F
+   //增加包转发策略
+   iptables -t nat -AOUTPUT -d 50.28.102.240 -j DNAT --to 8.8.4.4 //(注：把8.8.4.4替换为你服务器的真实IP）
+   ```
 
-6. 检查转发策略是否启用
+
+1. 检查转发策略是否启用
   iptables -L -t nat
   如果在Chain OUTPUT(policy ACCEPT)中有如下条目
   DNAT      all  --  anywhere             50.28.102.240        to:8.8.4.4 （注：8.8.4.4应为你服务器的真实IP）
@@ -191,21 +217,24 @@ wget http://soft.vpser.net/lnmp/lnmp1.5.tar.gz -cO lnmp1.5.tar.gz && tar zxf lnm
 
 #### 问题
 
-[ioncube loader 插件没有](https://51daiwei.net/install-ioncube-loader-on-centos)
+- [ioncube loader 插件没有](https://51daiwei.net/install-ioncube-loader-on-centos)
 
-> 注册完账号后登录不进界面，并提示`The form could not be submitted. Click here to try again`
+- 注册完账号后登录不进界面，并提示`The form could not be submitted. Click here to try again`
 
 **解决：**
 
-   1. 在本地主机修改hosts文件，添加本地域名映射。如：`192.169.199.129  www.mymobi.com` [参考](https://blog.csdn.net/wudinaniya/article/details/77624023)
+   1. 打开目录C:\WINDOWS\System32\drivers\etc\hosts
 
-   2. cmd窗口`ping www.mymobi.com`是否正常连接
-   3. 修改nginx.conf文件 `server_name  www.mymobi.com`
-   4. sysytemctl restart nginx 重启nginx服务
+   2. 在本地主机修改hosts文件，添加本地域名映射。如：`192.169.199.130  www.mymobi.com` Ctrl+S保存hosts文件修改 [参考](https://blog.csdn.net/wudinaniya/article/details/77624023)
+
+   3. cmd窗口`ping www.mymobi.com`是否正常连接
+      ![ping www.mymobi.com](../adsTec/assets/img/pingdomain.png)
+   4. 修改nginx.conf文件 `server_name  www.mymobi.com`
+   5. sysytemctl restart nginx 重启nginx服务
 
 
 
-## 3. IM主要设置说明；
+## 3. IM主要设置说明；root
 ## 4. 服务器运维
 ## 5. 常见故障排查及解决
 ## 6. 高级技巧
