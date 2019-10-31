@@ -146,7 +146,7 @@ wget http://soft.vpser.net/lnmp/lnmp1.5.tar.gz -cO lnmp1.5.tar.gz && tar zxf lnm
 - yum install screen 或 apt-get install screen
 - screen -S lnmp
 
-
+- mysql -u root -p 登录MySQL
 
 
 ## 1. 服务器搭建与生产环境配置；
@@ -189,6 +189,9 @@ wget http://soft.vpser.net/lnmp/lnmp1.5.tar.gz -cO lnmp1.5.tar.gz && tar zxf lnm
    iptables -t nat -F
    //增加包转发策略
    iptables -t nat -AOUTPUT -d 50.28.102.240 -j DNAT --to 8.8.4.4 //(注：把8.8.4.4替换为你服务器的真实IP）
+
+   //持久化规则
+   service iptables save
    ```
 
 
