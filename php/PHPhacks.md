@@ -7,8 +7,8 @@
 
 2. php程序获取当前访问服务器的URL信息
 
-    ```
-    测试网址:     http://localhost/blog/testurl.php?id=5
+    ```php
+    //测试网址:     http://localhost/blog/testurl.php?id=5
 
    //获取域名或主机地址 
    echo $_SERVER['HTTP_HOST']."<br>"; #localhost
@@ -40,7 +40,7 @@
 
 3. PHP参数分割提取
 
-   ```
+   ```php
    //解析URL参数
    function parseUrlParam($query){
        $queryArr = explode('&', $query);
@@ -131,7 +131,7 @@
 
     在php程序中使用fopen()函数写入访客的IP信息，在命令行下可以顺利新建或打开文件，而通过浏览器请求php后缀的文件时，fopen()函数就失效了。其实对比到这样的情况就可以大概确定这是服务器权限导致的问题。解决方案也很明确，就是修改根目录的权限。
 
-    - chmod：`sudo chmod 777 -R /home/wwwroot` 把/home/wwwroot目录对所有用户开启读写权限
+    - chmod：`sudo chmod 666 -R /home/wwwroot/default/log/echo.log` 修改目录或文件对所有用户开启读写权限
     - 修改php.ini
 
 7. PHP 类型判断
@@ -149,7 +149,7 @@
 
 9. `<<<EOF string EOF;`定界符
     
-   ```
+   ```php
    $sql = <<<EOF  
         //sql语句
    EOF;
@@ -159,7 +159,7 @@
 
    **有特殊符号的变量字符：**
 
-   ```
+   ```php
    //先把数组元素赋值给变量
    $IP = $json['query'];
    $name = $json['city'];
@@ -170,4 +170,55 @@
 
    ```
 
+10. 判断数据表是否已经存在。[参考](https://www.hangge.com/blog/cache/detail_1453.html)
 
+    - 只要判断结果：`SELECT count(*) FROM sqlite_master WHERE type="table" AND name = `"**tableName**";
+
+      ```php
+      # judge table whether existed
+          $sql = <<<EOF
+              SELECT count(*) FROM sqlite_master WHERE type="table" AND name = "COMPANY";
+      EOF;
+      ```
+      **注意:** 实际使用似乎不起作用，$res的值总是为1。
+
+    - 创建表的时候判断：`CREATE TABLE IF NOT EXISTS `**tableName**
+
+      ```php
+        $sql =<<<EOF
+            CREATE TABLE IF NOT EXISTS COMPANY(
+            query INT PRIMARY KEY     NOT NULL,
+            status           TEXT    NOT NULL
+        );
+      EOF;
+      ```
+
+
+11. sqlite3自增key设定(创建自增字段)
+
+    - 使用命令`INTEGER PRIMARY KEY AUTOINCREMENT`即可设置表数据插入时id索引自增。在插入数据时直接置空
+
+      ```php
+      create table test (
+          [tkid]            integer PRIMARY KEY autoincrement,               # -- 设置自增主键
+          [tktype]          int default 0,
+          [tableid]         varchar (50),
+          [createdate]      datetime default (datetime('now', 'localtime'))  # -- 时间
+      );
+      ```
+
+
+
+12. 获取当前文件的绝对路径
+
+    多个文件之间相互调用时容易出现找不到准确路径的问题，使用`dirname(__FILE__)`函数返回当前脚本所在目录的绝对路径，可以很好地解决这个问题。
+
+    - dirname(__FILE__) 返回当前执行脚本所在的路径
+
+    ```php
+    <?php 
+      echo __FILE__ ; // 返回当前执行脚本绝对路径，输出：D:\www\test.php 
+      echo dirname(__FILE__); // 返回当前脚本所在的绝对目录，输出：D:\www\ 
+      echo dirname(dirname(__FILE__)); //支持嵌套调用，返回上一层绝对目录，输出：D:\ 
+    ?>
+    ```
