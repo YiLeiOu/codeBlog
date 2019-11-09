@@ -1,0 +1,25 @@
+{
+  "name": "puppeteer1.0",
+  "version": "1.0.0",
+  "description": "my first puppeteer project",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run dev"
+  },
+  "author": "leiou",
+  "license": "ISC",
+  "devDependencies": {
+    "exceljs": "^1.7.0",
+    "nodemailer": "^6.3.0",
+    "request": "^2.88.0",
+    "silly-datetime": "^0.1.2",
+    "webpack": "^4.29.4",
+    "webpack-cli": "^3.2.3"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "puppeteer": "^1.18.1",
+    "puppeteer-core": "^1.12.2",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
