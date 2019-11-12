@@ -48,3 +48,19 @@
 
 
 
+## 一键部署服务器环境
+
+有个叫[“一键安装包”](https://lnmp.org/auto.html)的网站，提供一条命令安装LNMP(linux、Nginx、MySQL、PHP)环境的方法。
+
+具体命令案例：
+
+```shell
+wget http://soft.vpser.net/lnmp/lnmp1.6.tar.gz -cO lnmp1.6.tar.gz && tar zxf lnmp1.6.tar.gz && cd lnmp1.6 && LNMP_Auto="y" DBSelect="2" DB_Root_Password="lnmp.org" InstallInnodb="y" PHPSelect="5" SelectMalloc="1" ./install.sh lnmp
+```
+
+如图：
+
+![](./img/lnmp.png)
+
+
+
