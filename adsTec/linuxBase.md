@@ -610,3 +610,42 @@ ping一个远程主机，只发5个数据包
 > wget -O taglist.zip http://www.vim.org/scripts/download_script.php?src_id=7701
 
 **[参考](https://gywbd.github.io/posts/2014/8/50-linux-commands.html)**
+
+
+------------
+
+**安装wordpress**
+
+```shell
+1.建立一个临时文件夹,下载最新版本的Wordpress
+
+ mkdir /tmp/wp
+
+cd /tmp/wp
+
+wget http://wordpress.org/latest.zip
+
+2. 解压缩到网站根目录，不同环境下目录有所不同
+
+// LAMP
+unzip -q latest.zip -d /data/www/default/
+
+// LNMP
+unzip -q latest.zip -d /home/wwwroot/default/
+
+3. 更改wordpree文件夹属主和权限
+
+chown -R apache:apache /data/www/default/wordpresschmod -R 755 /data/www/default/wordpress
+
+4、创建一个可以上传的目录upload，并将属主改为apache
+
+mkdir -p /data/www/default/wordpress/wp-content/uploads
+
+chown -R :apache /data/www/default/wordpress/wp-content/uploads
+
+```
+1. 已经安装好了lnmp
+2. 域名解析
+3. 安装wordpress
+   
+[参考](https://www.newlearner.site/2018/11/03/wordpress-lnmp.html)
