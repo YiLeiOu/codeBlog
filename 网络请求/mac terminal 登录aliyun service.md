@@ -47,4 +47,15 @@
     `ssh myServer`
 
 
+**安装wordpress**
+
+1. 已经安装好了lnmp
+2. 域名解析
+3. 安装wordpress
+4. 修改wordpress数据表中wp_options字段把option_value修改成“wp-content/uploads”
+5. 刷新wordpress
+   
+[参考](https://www.newlearner.site/2018/11/03/wordpress-lnmp.html)
+
+
 
