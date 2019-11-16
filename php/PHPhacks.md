@@ -194,7 +194,7 @@
       ```
 
 
-11. sqlite3自增key设定(创建自增字段)
+11. sqlite3(mysql类似)自增key设定(创建自增字段)
 
     - 使用命令`INTEGER PRIMARY KEY AUTOINCREMENT`即可设置表数据插入时id索引自增。在插入数据时直接置空
 
@@ -221,4 +221,137 @@
       echo dirname(__FILE__); // 返回当前脚本所在的绝对目录，输出：D:\www\ 
       echo dirname(dirname(__FILE__)); //支持嵌套调用，返回上一层绝对目录，输出：D:\ 
     ?>
+    ```
+
+13. php 批量插入sql数据
+
+    - 第一种操作：
+
+    ```php
+    <?php # 此代码不能直接用
+
+        $servername = 'localhost';
+        $username = 'root';
+        $passw = '000000';
+        $db = 'mydb';
+
+        $count = 10;
+
+        $con = new mysqli($servername,$username,$passw,$db);
+
+        if( $con->connect_error){
+
+            die('connect fail:'.$con->connect_error.PHP_EOL);
+
+        }
+
+        while( $count-- ){
+
+            # 遍历执行插入
+        
+            # key
+            $sql = "insert into wp_posts (
+                ID,
+                post_author,
+                post_date,
+                post_date_gmt,
+                post_content,
+                post_title,
+                post_excerpt,
+                post_name,
+                post_modified,
+                post_modified_gmt,
+                guid) VALUES";
+            
+            # value
+            $sql .="
+            (
+                '$id',
+                1,
+                '$date',
+                '$date',
+                '$content',
+                '$title',
+                '$excerpt',
+                '$title',
+                '$date',
+                '$date',
+                '$guid'
+            );";
+
+            $con->multi_query($sql);
+
+        }
+
+    }
+
+    ```
+
+    - 第二种操作
+
+    ```php
+    <?php # 此代码不能直接用
+
+        $servername = 'localhost';
+        $username = 'root';
+        $passw = '000000';
+        $db = 'mydb';
+
+        $count = 10;
+
+        $con = new mysqli($servername,$username,$passw,$db);
+
+        if( $con->connect_error){
+
+            die('connect fail:'.$con->connect_error.PHP_EOL);
+
+        }
+        # key
+        $sql = "insert into wp_posts (
+            ID,
+            post_author,
+            post_date,
+            post_date_gmt,
+            post_content,
+            post_title,
+            post_excerpt,
+            post_name,
+            post_modified,
+            post_modified_gmt,
+            guid) VALUES";
+
+        while( $count-- ){
+
+            # 遍历执行拼接value，最后一次性插入
+
+            # value
+            $sql .="
+            (
+                '$id',
+                1,
+                '$date',
+                '$date',
+                '$content',
+                '$title',
+                '$excerpt',
+                '$title',
+                '$date',
+                '$date',
+                '$guid'
+            ),";# <======  注意这里的区别
+
+        }
+        $sql = rtrim($sql, ','); # 删除字符串末端空白字符
+
+        if( $con->multi_query($sql) === TRUE ){
+
+            echo 'insert data successfully'.PHP_EOL;
+
+        }else{
+
+           echo 'create table fail:'.$con->error;
+
+        }        
+
+    }
     ```

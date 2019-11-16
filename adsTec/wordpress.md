@@ -1,6 +1,6 @@
 1. 忘记密码，通过修改数据库重设密码
 
-    登录phpMyadmin ，进入到网站对应的数据库，然后打开 wp_users 那个表。把user_pass的值编辑为`5d41402abc4b2a76b9719d911017c592`===>`hello`。保存后用hello作为密码登录即可。成功进入wordpress后台再更新密码。
+    登录phpMyadmin ，进入到网站对应的数据库，如：wordpressdb，然后找到并打开 wp_users 那个表。把user_pass的值编辑为`5d41402abc4b2a76b9719d911017c592`===>`hello`（Md5编码）。保存后用hello作为密码登录，成功进入wordpress后台再更新密码即可。
 
 
 2. 自动显示封面图
@@ -31,6 +31,20 @@
     ```
     再找别的方法，在一篇文章中看到推荐一个插件：[**Set All First Images As Featured**](https://wordpress.org/plugins/set-all-first-images-as-featured/)。下载下来，解压、复制到plugins目录下，回到wordpress控制台刷新安装此插件，运行一下，运行结果提示异常。
 
-    刷新页面一看，封面图区域出来了，但是图片没有显示。用浏览器检查页面，发现图片的路径是默认的上传路径。但是图片并不是放在那个目录，所以去数据库控制台修改wp_options表中upload-path的值为图片目录，刷新页面。这是发现图片有了，可是图片尺寸是1*1的，控制台修改样式`width:100%`,这时图片正常显示了。
+    刷新页面一看，封面图区域出来了，但是图片没有显示。用浏览器检查页面，发现图片的路径是默认的上传路径。但是图片并不是放在那个目录，所以去数据库控制台修改wp_options表中upload-path的值为图片目录，刷新页面。这是发现图片有了，可是图片尺寸是1*1的，控制台修改样式`width:100%`，这时图片正常显示了。
 
-    又有一个要改样式的问题。第一时间想到的是直接去php的代码中修改生成封面图的代码，一不小心就走入了坑里面。折腾了好一段时间，没有成功。改变思路，不如直接去修改样式文件？把样式文件`style.css`修改完，覆盖旧文件刷新页面，终于正常显示了。
+    到这里遇到的问题是图片已经成功加载出来，但是显示为1*1的大小，需要想办法把样式改为显示正常图片大小。第一时间想到的是直接去php的代码中修改生成封面图的代码，一不小心就走入了坑里面，定位到content.php文件下的一个函数the_post_thumbnail，Google了一下。
+    ```php
+    #用法: 
+    <?php the_post_thumbnail( $size, $attr );>
+    
+    #参数:
+    $size
+    (string/array) (Optional) 图片大小，可以是以下几个关键字：thumbnail, medium, large, full，或者通过函数 add_image_size() 自定义尺寸的关键字。或者宽和高的一个大小，比如：(32,32).
+
+    $attr
+    (array) (Optional) 属性/值的一个数组，the_post_thumbnail 传递给函数 wp_get_attachment_image用来获取图。
+
+    ```
+    
+    折腾了好一段时间，还是没有成功，不过可以确认的是关键代码的确是这里。改变思路，既然用函数生成的代码改不了，不如直接去修改样式文件？把样式文件`style.css`修改完，覆盖旧文件刷新页面，终于正常显示了。
