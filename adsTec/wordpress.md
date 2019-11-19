@@ -57,3 +57,9 @@
     - 用命令`/bin/cp -rf /path/wordpress/* ./`复制并覆盖服务器上wordpress目录下的文件
     - 刷新网站页面或浏览器输入`http://youdomain.com/wp-admin/upgrade.php`确认升级
     - 重新打开需要的插件，备份数据
+
+
+4. 添加语言包
+
+    - [语言包导出](https://translate.wordpress.org/projects/wp/4.8.x/en-gb/default/)
+    - [语言代码对照](https://make.wordpress.org/polyglots/teams/)
