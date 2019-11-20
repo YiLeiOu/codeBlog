@@ -63,3 +63,48 @@
 
     - [语言包导出](https://translate.wordpress.org/projects/wp/4.8.x/en-gb/default/)
     - [语言代码对照](https://make.wordpress.org/polyglots/teams/)
+
+
+5. nginx服务器wordpress后台设置固定链后返回404
+
+    ```php
+    // 编辑文件：vi /usr/local/nginx/conf/nginx.conf（不同环境或版本该路径可能有所不同）
+    # 在server代码块中加入以下部分代码
+     location / {
+         index index.html index.php;
+         if (-f $request_filename/index.html){
+             rewrite (.*) $1/index.html break;
+         }
+         if (-f $request_filename/index.php){
+             rewrite (.*) $1/index.php;
+         }
+         if (!-f $request_filename){
+             rewrite (.*) /index.php;
+         }
+     }
+     rewrite /wp-admin$ $scheme://$host$uri/ permanent;
+
+    ```
+
+6. wordpress配置全局相对路径
+
+    - 数据库后台设置
+    1. 登录数据库后台
+    2. 打开wordpressdb数据库
+    3. 找到wp_options数据表并点击进去,编辑siteurl和home两个选项的option_value为【/】，如图：
+    ![](assets/img/path.png)
+    **注意：** 编辑完成后记得点执行按钮。
+
+
+    - wp-config.php 文件配置
+
+    1. 进入到网站根目录
+    2. vi wp-config.php （编辑配置文件）
+    3. 在最底下添加以下代码：
+    ```php
+      $home = '/';
+      $siteurl = '/';
+
+      define('WP_HOME', $home);
+      define('WP_SITEURL', $siteurl);
+    ```
