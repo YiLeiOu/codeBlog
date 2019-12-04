@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Parent</title>
+</head>
+<body>
+    
+    <button class="btn">send</button>
+
+    <div class="output"></div>
+</body>
+
+<script>
+    const kidPage = window.open('child.html','child');
+
+    // kidPage.onload = () =>{
+        // kidPage.postMessage('hello world!',location.origin);
+    // }
+    var i = 1;
+    // 有跨域问题，必须是同源的页面
+    document.querySelector('.btn').onclick = () => {
+        kidPage.postMessage('hello world!',location.origin);
+        document.querySelector('.output').innerHTML += "send" + (i++) + "<br/>" ; 
+    }
+</script>
+</html>
