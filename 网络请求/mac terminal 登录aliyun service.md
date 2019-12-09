@@ -74,4 +74,34 @@ wget http://soft.vpser.net/lnmp/lnmp1.6.tar.gz -cO lnmp1.6.tar.gz && tar zxf lnm
 ![](./img/lnmp.png)
 
 
+## 漏洞修复
+
+1. RHSA-2019:0049-高危: systemd 安全更新
+
+   yum update systemd-networkd
+   yum update systemd
+   yum update systemd-libs
+   yum update systemd-sysv
+
+2. RHSA-2018:3032-低危: binutils 安全和BUG修复更新
+
+    yum update binutils
+
+3. RHSA-2018:3665-高危: NetworkManager 安全更新
+
+   yum update NetworkManager-tui
+   yum update NetworkManager-wifi
+   yum update NetworkManager
+   yum update NetworkManager-team
+   yum update NetworkManager-libnm
+   
+4. RHSA-2018:3092-中危: glibc 安全和BUG修复更新
+
+    yum update glibc-headers
+    yum update nscd
+    yum update glibc
+    yum update glibc-common
+    yum update glibc-devel
+
+
 
