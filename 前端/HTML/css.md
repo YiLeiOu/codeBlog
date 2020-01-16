@@ -47,3 +47,20 @@
     }
 
     ```
+
+4. 自适应的正方形
+
+    在目标元素上添加伪类元素并设置伪类元素的`padding-top:100%`撑开父级
+
+    ```css
+   #square{  
+       width:30%;  
+       background:red;  
+       max-width:200px;  
+   }  
+   #square:after{  
+       content: '';  
+       display: block;  
+       padding-top:100%;  
+   }
+    ```

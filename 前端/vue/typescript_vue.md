@@ -1,3 +1,80 @@
+### 异步更新队列
+
+Vue在更新DOM时异步执行。侦听器像一个侦察兵一样监控着绑定了数据的属性的值变化，一旦检测到变化就会给vue发送一个通知，vue接收到通知就会缓冲同一事件循环中发生的所有数据变更。在下一个事件循环的“tick”中，vue刷新队列并执行操作。
+
+
+**任意值：any**
+
+如果变量是 any 类型，则允许被赋值为任意类型
+
+```js
+let myFavoriteNumber: any = 'seven';
+    myFavoriteNumber = 7;
+```
+
+**联合类型：** 给一个变量指定多种类型，属于指定类型中的任意一种都可以正确赋值
+
+```js
+// 不会报错
+let myFavoriteNumber: string | number;
+myFavoriteNumber = 'seven';
+myFavoriteNumber = 7;
+
+// 会报错
+let myFavoriteNumber: string | number;
+myFavoriteNumber = true;
+// index.ts(2,1): error TS2322: Type 'boolean' is not assignable to type 'string | number'.
+// Type 'boolean' is not assignable to type 'number'.
+```
+
+
+**类型断言：** 手动指定一个值的类型
+
+使用语法：<类型>值 or 值 as 类型。当需要在还不确定类型的时候就访问其中一个类型的属性或方法时
+
+```js
+function getLength(something: string | number): number {
+    if (something.length) {
+        return something.length;
+    } else {
+        return something.toString().length;
+    }
+}
+// index.ts(2,19): error TS2339: Property 'length' does not exist on type 'string | number'.
+//   Property 'length' does not exist on type 'number'.
+// index.ts(3,26): error TS2339: Property 'length' does not exist on type 'string | number'.
+//   Property 'length' does not exist on type 'number'.
+
+// 获取 something.length 的时候会报错
+// 使用类型断言，将 something 断言成 string
+function getLength(something: string | number): number {
+    if ((<string>something).length) {
+        return (<string>something).length;
+    } else {
+        return something.toString().length;
+    }
+}
+```
+
+```js
+// or
+function getLength(something: string | number): number {
+    if ((something as string).length) {
+        return (something as string).length;
+    } else {
+        return something.toString().length;
+    }
+}
+
+// 类型断言不是类型转换，断言成一个联合类型中不存在的类型是不允许的
+function toBoolean(something: string | number): boolean {
+    return <boolean>something;
+}
+// index.ts(2,10): error TS2352: Type 'string | number' cannot be converted to type 'boolean'.
+// Type 'number' is not comparable to type 'boolean'.
+```
+
+
 1. 定义组件
     ```js
     // 官方维护的 vue-class-component 修饰器，基于类的 API
@@ -34,13 +111,70 @@
 
     使用插槽需要以特定的规则声明以及调用。
 
-4. 接口interface
+4. 接口interface :对象的类型——接口
 
-- 浅层理解：规定数据的结构和类型，将变量的类型定义为某个接口的类型后，给该变量赋值必须符合接口定义的数据结构和类型规范。
+- 浅层理解：规定对象的结构和属性的类型，将变量的类型定义为某个接口的类型后，给该变量赋值必须符合接口定义的数据结构和属性类型规范。
 
     举个例子：
 
     螺丝刀与螺丝的卡口就需要按照某种模式进行匹配才可用。一字螺丝刀对应一字卡槽的螺丝；十字螺丝刀对应十字卡槽的螺丝。
+
+    ```js
+    interface Person {
+        name: string;
+        age: number;
+    }
+    // 对象结构必须与接口的结构和属性类型完全一致
+    let tom: Person = {
+        name: 'Tom',
+        age: 25
+    };
+
+    // 可选属性
+    interface Person {
+        name: string;
+        age?: number; // 可选属性
+    }
+    let tom: Person = {
+        name: 'Tom',
+        age: 25 // 可有可无
+    };
+
+    // 任意属性。允许给对象任意添加属性，动态对象
+    // 一旦定义了任意属性，那么确定属性和可选属性的类型都必须是它的类型的子集
+    // 避免报错 [propName: string]: any; // 指定任意属性类型为any
+    interface Person {
+        name: string; // 继承任意属性的类型
+        age?: number; // 继承任意属性的类型
+        [propName: string]: string; // 任意属性
+    }
+
+    let tom: Person = {
+        name: 'Tom',
+        age: 25; // 这个会导致报错，因为任意属性类型是string
+        gender: 'male'
+    };
+
+    // 只读属性
+    // 只读的约束存在于第一次给对象赋值的时候，而不是第一次给只读属性赋值的时候
+    interface Person {
+        readonly id: number;
+        name: string;
+        age?: number;
+        [propName: string]: any;
+    }
+
+    let tom: Person = {
+        id: 89757,
+        name: 'Tom',
+        gender: 'male'
+    };
+
+    tom.id = 9527;
+    // index.ts(14,5): error TS2540: Cannot assign to 'id' because it is a constant or a read-only property.
+    ```
+
+
 
 
 5. this.$emit(fun,value) 
@@ -251,6 +385,16 @@
         this.resetValidation()
       }
       ```
+
+9. Typescript中触发DOM点击事件 - Property'click'在类型'Element'上不存在
+
+    使用类型HTMLElement，而不是Element。 HTMLElement从Element继承。在文档中你可以发现HTMLElement中定义了click函数。
+
+    ```js
+    let element: HTMLElement = document.getElementsByClassName('btn')[0] as HTMLElement; 
+        element.click(); 
+    ```
+
 
 
 
