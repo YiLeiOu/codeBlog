@@ -394,7 +394,138 @@ function toBoolean(something: string | number): boolean {
     let element: HTMLElement = document.getElementsByClassName('btn')[0] as HTMLElement; 
         element.click(); 
     ```
+10. http标准错误和自定义错误不能放在一起
+    ```js
+    export const statusCode = {
+      // http标准错误和自定义错误不能放在一起
+      // network error
+      // BadRequest: 400,
+      // Unauthorized: 401,
+      // Forbidden: 403,
+      // NotFound: 404,
+      // InternalServerError: 500,
 
+      // global:0xx
+      Success: 0,
+      InvalidToken: 1,
+      InvalidRequestBody: 2,
+      ServerUnknownError: 10,
+      DatabaseError: 11
+    }
+    ```
+
+11. 请求接口的方法内不要做过多逻辑判断
+
+    ```ts
+    // 错误写法
+    export function login (phone: string, password: string):Promise<User> {
+      return new Promise<User>(function (resolve, reject) {
+        let useData:Login = {
+          phone: phone,
+          password: password
+        }
+        post('/account/login', useData)
+          .then(res => {
+            let data = res.data
+            if (data.code === 0) {
+              resolve(data.data)
+            } else {
+              reject(data)
+            }
+          })
+      })
+    }
+
+    // 建议写法
+    export function login (phone: string, password: string):Promise<User> {
+      // @ts-ignore 忽略Eslin类型检查错误提示
+      return post('/account/login', {
+        phone: phone,
+        password: password
+      })
+    }
+    ```
+
+12. 非组件内调用store vuex的方法
+
+    ```ts
+    // router/index.ts
+    import store from '@/store'
+
+    // 路由守卫钩子
+    router.beforeEach(async (to: Route, _: Route, next: any) => {
+      // Determine whether the user has logged in
+      if (to.meta.noNeedPermission) {
+        next()
+      } else {
+        let token = (store as any).getters['userState/token']
+        if (token) {
+          next()
+        } else {
+          next({ path: NavigationPath.LOGIN })
+        }
+      }
+    })
+    ```
+
+13. 请求拦截器内设置全局请求头信息
+
+    ```ts
+    // 请求拦截
+    fly.interceptors.request.use((request) => {
+      request.headers['osaas_access_token'] = localStorage.getItem('token') || ''
+
+      Log.debug('request---', request)
+
+      return request
+    })
+    ```
+14. 响应拦截器内设置统一的错误处理机制
+
+    ```ts
+    // 响应拦截
+    fly.interceptors.response.use(
+      async (response) => {
+        Log.debug('response---', response)
+        // 首先判断响应是否有效
+        if (response && response.data && response.data.code === statusCode.Success) {
+          return response.data.data
+        }
+
+        // fly 内部错误格式是msg,status不是message
+        let error = new Error() as any
+        error.status = response.engine.status
+        // 服务器数据格式不对
+        if (!response || !response.data) {
+          error.msg = '服务器格式错误'
+          error.message = error.msg
+          throw error
+        }
+        // token 失效清空用户数据跳转到登录页
+        if (response.data.code === statusCode.InvalidToken) {
+          // store派发userState模块下的clearUserInfo方法清除数据
+          await store.dispatch('userState/clearUserInfo')
+          // 重定向到登录页
+          Router.replace({ path: NavigationPath.LOGIN })
+        }
+        // 把错误码转化为错误信息
+        error.msg = paresErr(response.data.code, response.data.msg)
+        error.message = error.msg
+        throw error
+      },
+
+      (err) => {
+        Log.debug('response error---', err)
+
+        let errTemp = err as any
+        if ((errTemp.status >= 200 && errTemp.status < 300) || errTemp.status === 304) {
+          // 返回原有的错误
+          return err
+        }
+        return Promise.reject(new Error('服务器错误'))
+      }
+    )
+    ```
 
 
 
