@@ -527,5 +527,11 @@ function toBoolean(something: string | number): boolean {
     )
     ```
 
+15. 使用keep-alive同组件不同路由页面不刷新
+
+  - 使用watch方法监听路由变化
+
+  - 在router-view添加key属性区分路由`<router-view :key="routerKey()"/>`。如果组件内有http请求，这个方法会导致多次请求的问题出现
+
 
 
